@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[git本地仓库关联远程仓库]]></title>
+    <url>%2F2019%2F07%2F31%2Fgit%E6%9C%AC%E5%9C%B0%E5%85%B3%E8%81%94%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%2F</url>
+    <content type="text"><![CDATA[由于最近硬盘出现了不可修复的损坏，换了个硬盘重装过系统以后损失惨重，包括之前用hexo搭的博客。不过也怪自己没有好好备份，于是打算把博客相关资源每周都至少push一次到git上。作为菜鸡，也巩固一下git的使用吧。 本地的hexo文件夹下使用git init命令，初始化本地git仓库； 用git remote add命令，关联远程仓库： 1git remote add origin git@github.com:0ltremar3/hexo.git git remote -v查看是否关联成功： 由于本地和远程仓库目前还是两个独立的仓库，push的话会因为两个仓库内容不一致而reject. 解决： 1git pull origin master --allow-unrelated-histories pull成功后再push就ok了： 1git push -u origin master]]></content>
+      <tags>
+        <tag>Git</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[hexo博客乱码问题解决]]></title>
     <url>%2F2019%2F07%2F31%2Fhexo%E5%8D%9A%E5%AE%A2%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%2F</url>
     <content type="text"><![CDATA[将博客文件保存为UTF-8即可解决问题。 方法： ​ 1.将博客文件保存为UTF-8 ​ 用记事本打开本地的博客文件“xxx.md”，然后点“另存为”，“编码(E):”选择“UTF-8”， ​ 点击“保存”，替换原文件。 ​ 2.重新生成，部署，博客乱码即消除。]]></content>
       <tags>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[1025. PAT Ranking (25)]]></title>
-    <url>%2F2018%2F08%2F29%2F1025.%20PAT%20Ranking%20(25)%2F</url>
-    <content type="text"><![CDATA[Programming Ability Test (PAT) is organized by the College of Computer Science and Technology of Zhejiang University. Each test is supposed to run simultaneously in several places, and the ranklists will be merged immediately after the test. Now it is your job to write a program to correctly merge all the ranklists and generate the final rank. Input Specification:Each input file contains one test case. For each case, the first line contains a positive number N (&lt;=100), the number of test locations. Then N ranklists follow, each starts with a line containing a positive integer K (&lt;=300), the number of testees, and then K lines containing the registration number (a 13-digit number) and the total score of each testee. All the numbers in a line are separated by a space. Output Specification:For each test case, first print in one line the total number of testees. Then print the final ranklist in the following format:registration_number final_rank location_number local_rankThe locations are numbered from 1 to N. The output must be sorted in nondecreasing order of the final ranks. The testees with the same score must have the same rank, and the output must be sorted in nondecreasing order of their registration numbers. Sample Input:123456789101112251234567890001 951234567890005 1001234567890003 951234567890002 771234567890004 8541234567890013 651234567890011 251234567890014 1001234567890012 85 Sample Output:1234567891091234567890005 1 1 11234567890014 1 2 11234567890001 3 1 21234567890003 3 1 21234567890004 5 1 41234567890012 5 2 21234567890002 7 1 51234567890013 8 2 31234567890011 9 2 4 代码实现：123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354#include &lt;iostream&gt;#include &lt;cstdio&gt;#include &lt;cstring&gt;#include &lt;algorithm&gt;using namespace std;/* run this program using the console pauser or add your own getch, system("pause") or input loop */struct student&#123; char id[13];//int 范围 [-2147483648, 2147483647] int grade; int loc_rank; int loc;&#125;stu[1000];bool cmp(student a,student b)&#123; if(a.grade!=b.grade)&#123; return a.grade&gt;b.grade; &#125; else return strcmp(a.id,b.id)&lt;0;&#125;int main(int argc, char** argv) &#123; int locn;//考场数量 int k,num=0;//k为当前考场内学生数量，num为学生总数 scanf("%d",&amp;locn); /*处理输入*/ for(int i=1;i&lt;=locn;i++)&#123; scanf("%d",&amp;k); for(int j=0;j&lt;k;j++)&#123;//当前考场学生信息录入 scanf("%s%d",stu[num].id,&amp;stu[num].grade);// stu[num].loc=i; num++; &#125; /*当前考场排序与排名处理*/ sort(stu+num-k,stu+num,cmp);//当前考场排序 stu[num-k].loc_rank=1; for(int j=num-k+1;j&lt;num;j++)&#123; if(stu[j].grade==stu[j-1].grade)&#123; stu[j].loc_rank=stu[j-1].loc_rank; &#125; else stu[j].loc_rank=j+1-(num-k);//!!!成绩不相等时，排名=当前考生数组下标+1（真实人数）-起始位置 &#125; &#125; /*总排名*/ printf("%d\n",num); sort(stu,stu+num,cmp); int r=1; for(int j=0;j&lt;num;j++)&#123; if(j&gt;0&amp;&amp;stu[j].grade!=stu[j-1].grade)&#123;//stu[j].grade!=stu[j+1].grade r=j+1;//!!! &#125; printf("%s %d %d %d\n",stu[j].id,r,stu[j].loc,stu[j].loc_rank);//准考证号 总排名 考场号 本地排名 &#125; return 0;&#125; 来源：https://www.patest.cn/contests/pat-a-practise/1025]]></content>
-      <tags>
-        <tag>算法</tag>
-        <tag>PAT(A)</tag>
       </tags>
   </entry>
   <entry>
@@ -24,6 +24,15 @@
       <tags>
         <tag>算法</tag>
         <tag>codeup</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[1025. PAT Ranking (25)]]></title>
+    <url>%2F2018%2F08%2F29%2F1025.%20PAT%20Ranking%20(25)%2F</url>
+    <content type="text"><![CDATA[Programming Ability Test (PAT) is organized by the College of Computer Science and Technology of Zhejiang University. Each test is supposed to run simultaneously in several places, and the ranklists will be merged immediately after the test. Now it is your job to write a program to correctly merge all the ranklists and generate the final rank. Input Specification:Each input file contains one test case. For each case, the first line contains a positive number N (&lt;=100), the number of test locations. Then N ranklists follow, each starts with a line containing a positive integer K (&lt;=300), the number of testees, and then K lines containing the registration number (a 13-digit number) and the total score of each testee. All the numbers in a line are separated by a space. Output Specification:For each test case, first print in one line the total number of testees. Then print the final ranklist in the following format:registration_number final_rank location_number local_rankThe locations are numbered from 1 to N. The output must be sorted in nondecreasing order of the final ranks. The testees with the same score must have the same rank, and the output must be sorted in nondecreasing order of their registration numbers. Sample Input:123456789101112251234567890001 951234567890005 1001234567890003 951234567890002 771234567890004 8541234567890013 651234567890011 251234567890014 1001234567890012 85 Sample Output:1234567891091234567890005 1 1 11234567890014 1 2 11234567890001 3 1 21234567890003 3 1 21234567890004 5 1 41234567890012 5 2 21234567890002 7 1 51234567890013 8 2 31234567890011 9 2 4 代码实现：123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354#include &lt;iostream&gt;#include &lt;cstdio&gt;#include &lt;cstring&gt;#include &lt;algorithm&gt;using namespace std;/* run this program using the console pauser or add your own getch, system("pause") or input loop */struct student&#123; char id[13];//int 范围 [-2147483648, 2147483647] int grade; int loc_rank; int loc;&#125;stu[1000];bool cmp(student a,student b)&#123; if(a.grade!=b.grade)&#123; return a.grade&gt;b.grade; &#125; else return strcmp(a.id,b.id)&lt;0;&#125;int main(int argc, char** argv) &#123; int locn;//考场数量 int k,num=0;//k为当前考场内学生数量，num为学生总数 scanf("%d",&amp;locn); /*处理输入*/ for(int i=1;i&lt;=locn;i++)&#123; scanf("%d",&amp;k); for(int j=0;j&lt;k;j++)&#123;//当前考场学生信息录入 scanf("%s%d",stu[num].id,&amp;stu[num].grade);// stu[num].loc=i; num++; &#125; /*当前考场排序与排名处理*/ sort(stu+num-k,stu+num,cmp);//当前考场排序 stu[num-k].loc_rank=1; for(int j=num-k+1;j&lt;num;j++)&#123; if(stu[j].grade==stu[j-1].grade)&#123; stu[j].loc_rank=stu[j-1].loc_rank; &#125; else stu[j].loc_rank=j+1-(num-k);//!!!成绩不相等时，排名=当前考生数组下标+1（真实人数）-起始位置 &#125; &#125; /*总排名*/ printf("%d\n",num); sort(stu,stu+num,cmp); int r=1; for(int j=0;j&lt;num;j++)&#123; if(j&gt;0&amp;&amp;stu[j].grade!=stu[j-1].grade)&#123;//stu[j].grade!=stu[j+1].grade r=j+1;//!!! &#125; printf("%s %d %d %d\n",stu[j].id,r,stu[j].loc,stu[j].loc_rank);//准考证号 总排名 考场号 本地排名 &#125; return 0;&#125; 来源：https://www.patest.cn/contests/pat-a-practise/1025]]></content>
+      <tags>
+        <tag>算法</tag>
+        <tag>PAT(A)</tag>
       </tags>
   </entry>
   <entry>
